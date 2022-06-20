@@ -4507,7 +4507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RayCount: 100
-  PredictionDepth: 5
+  PredictionDepth: 3
   PlayerDetectionDeviation: 0.1
   Waypoints: {fileID: 1903419426}
 --- !u!1 &1903419426
