@@ -15,6 +15,7 @@
           <e p="PlayerController.cs" t="Include" />
           <e p="UI" t="Include">
             <e p="EndGamePanel.cs" t="Include" />
+            <e p="Menu.cs" t="Include" />
             <e p="RoundTimer.cs" t="Include" />
             <e p="ScoreText.cs" t="Include" />
           </e>

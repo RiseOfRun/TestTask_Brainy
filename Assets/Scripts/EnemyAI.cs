@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
@@ -16,17 +17,18 @@ public class EnemyAI : MonoBehaviour
         Soot
     }
 
-    public Transform[] Waypoints;
     public int RayCount;
     public int PredictionDepth = 1;
     public float PlayerDetectionDeviation = 10;
+    public GameObject Waypoints;
 
     private readonly List<Ray2D> rays = new List<Ray2D>();
     private Character controlledCharacter;
     private Character enemyCharacter;
     private Transform target;
     private Statements currentState = Statements.Seek;
-
+    private List<Transform> waypoints = new List<Transform>();
+    
     private Vector2 lastDetectionPosition;
     private Vector2 attackDirection;
     private Vector2 movement;
@@ -45,7 +47,10 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
         }
-
+        foreach (Transform waypoint in Waypoints.transform)
+        {
+            waypoints.Add(waypoint);
+        }
         float sector = 360f / RayCount;
         for (int i = 0; i < RayCount; i++)
         {
@@ -61,11 +66,6 @@ public class EnemyAI : MonoBehaviour
     {
         movement = Vector2.zero;
         angle = 0f;
-
-        foreach (var ray in rays)
-        {
-            Debug.DrawRay((Vector2) transform.position, ray.direction * 100, Color.black);
-        }
 
         if (GameController.Instance.State != GameController.GameStates.RoundIn)
         {
@@ -139,14 +139,31 @@ public class EnemyAI : MonoBehaviour
         CheckEnemy();
     }
 
-    void Move()
+    void GetWaypoint()
     {
         if (target == null || Vector2.Distance(transform.position, target.position) <=
             controlledCharacter.MovementSpeed * Time.fixedDeltaTime || Random.Range(0f, 1f) < 0.2f / 30)
         {
-            target = Waypoints[Random.Range(0, Waypoints.Length)];
+            for (int i = 0; i < waypoints.Count; i++)
+            {
+                int point = Random.Range(0, waypoints.Count);
+                (waypoints[i], waypoints[point]) = (waypoints[point], waypoints[i]);
+            }
+            foreach (var waypoint in waypoints)
+            {
+                if (!Physics2D.Raycast(transform.position,waypoint.position-transform.position,
+                    Vector2.Distance(waypoint.position,transform.position),LayerMask.GetMask("Wall")))
+                {
+                    target = waypoint;
+                    break;
+                }
+            }
         }
-
+    }
+    void Move()
+    {
+        
+        GetWaypoint();
         movement = target.position - transform.position;
         var transform1 = controlledCharacter.transform;
         float a = Vector2.SignedAngle(transform1.rotation * Vector2.up,
@@ -189,10 +206,9 @@ public class EnemyAI : MonoBehaviour
     {
         Vector2 origin = transform.position;
         Vector2 direction = r.direction.normalized;
-        RaycastHit2D hit;
         for (int i = 0; i < predictionDepth; i++)
         {
-            hit = Physics2D.Raycast(origin, direction, float.MaxValue, LayerMask.GetMask("Wall", "Player"));
+            RaycastHit2D hit = Physics2D.Raycast(origin, direction, float.MaxValue, LayerMask.GetMask("Wall", "Player"));
             if (hit.collider != null)
             {
                 if (i != 0 || predictionDepth == 1)

@@ -10,14 +10,14 @@ public class GameController : MonoBehaviour
 {
     public static GameController Instance;
     public Action StartRound;
-    [FormerlySerializedAs("FirstPlayer")] [Header("dependencies")]
+    [Header("dependencies")]
     public Character FirstCharacter;
-    [FormerlySerializedAs("SecondPlayer")] public Character SecondCharacter;
+    public Character SecondCharacter;
     public EndGamePanel EndGamePanel;
     [Header("settings")]
     public float ScoreToWin = 3;
-    public float TimeBetweenRounds = 3;
-    [HideInInspector] public float TimeToRound = 0;
+    public float TimeBetweenRounds;
+    [HideInInspector] public float TimeToRound;
 
     public enum GameStates
     {
@@ -26,11 +26,10 @@ public class GameController : MonoBehaviour
         Pause,
         End
     }
-
     public GameStates State
     {
         get => state;
-        private set
+        set
         {
             state = value;
             switch (value)
@@ -44,14 +43,10 @@ public class GameController : MonoBehaviour
                 case GameStates.End:
                     EndGame();
                     return;
-                case GameStates.RoundIn:
-                    return;
             }
         }
     }
-
-    private GameStates state = GameStates.RoundIn;
-
+    private GameStates state;
     private void Awake()
     {
         if (Instance==null)
@@ -66,6 +61,8 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
         StartGame();
     }
 
@@ -73,11 +70,9 @@ public class GameController : MonoBehaviour
     {
         FirstCharacter.Score = 0;
         SecondCharacter.Score = 0;
-        FirstCharacter.gameObject.SetActive(true);
-        SecondCharacter.gameObject.SetActive(true);
-        state = GameStates.Prepare;
+        State = GameStates.Prepare;
     }
-
+    
     public void PlayerHit(Character p)
     {
         if (state!=GameStates.RoundIn)
