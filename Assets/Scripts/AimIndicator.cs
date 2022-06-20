@@ -31,15 +31,16 @@ public class AimIndicator : MonoBehaviour
         bool foundPlayer = false;
         for (int i = 0; i < BounceCount; i++)
         {
-            hit = Physics2D.Raycast(origin, direction, float.MaxValue,~LayerMask.GetMask("Bullet"));
-            if (hit.collider!=null)
+            hit = Physics2D.Raycast(origin, direction, float.MaxValue, ~LayerMask.GetMask("Bullet"));
+            if (hit.collider != null)
             {
-                if (hit.collider.gameObject.layer==LayerMask.NameToLayer("Player"))
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Player"))
                 {
                     positions.Add(hit.point);
                     foundPlayer = true;
                     break;
                 }
+
                 Vector2 reflection = Vector2.Reflect(hit.point - origin, hit.normal).normalized;
                 Debug.DrawLine(origin, hit.point, Color.green);
                 //Debug.DrawRay(hit.point, reflection * 3, Color.red);
@@ -51,18 +52,19 @@ public class AimIndicator : MonoBehaviour
 
         if (!foundPlayer)
         {
-            hit = Physics2D.Raycast(origin, direction, float.MaxValue,~LayerMask.GetMask("Bullet"));
+            hit = Physics2D.Raycast(origin, direction, float.MaxValue, ~LayerMask.GetMask("Bullet"));
             Debug.DrawRay(origin, direction * 3, Color.red);
 
-            if (hit.collider!=null)
+            if (hit.collider != null)
             {
                 positions.Add(hit.point);
             }
             else
             {
-                positions.Add(origin+direction*Length);
+                positions.Add(origin + direction * Length);
             }
         }
+
         lr.positionCount = positions.Count;
         lr.SetPositions(positions.ToArray());
     }

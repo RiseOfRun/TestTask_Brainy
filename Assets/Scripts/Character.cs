@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -13,9 +9,9 @@ public class Character : MonoBehaviour
     public GameObject Bullet;
     public GameObject SourcePosition;
     public int Score;
-    
-    [HideInInspector]public Rigidbody2D rb;
-    private float timeToAttack = 0;
+
+    [HideInInspector] public Rigidbody2D rb;
+    private float timeToAttack;
     private Vector2 defaultPosition;
     private Collider2D collider;
     private Camera camera;
@@ -41,6 +37,7 @@ public class Character : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+
     private void Update()
     {
         if (timeToAttack > 0)
@@ -54,14 +51,16 @@ public class Character : MonoBehaviour
         Vector2 nextPosition =
             (Vector2) transform.position + direction.normalized * (MovementSpeed * Time.fixedDeltaTime);
         Vector2 viewPort = camera.WorldToViewportPoint(nextPosition);
-        if (viewPort.x<0 || viewPort.x >1)
+        if (viewPort.x < 0 || viewPort.x > 1)
         {
             nextPosition.x = transform.position.x;
         }
+
         if (viewPort.y < 0 || viewPort.y > 1)
         {
             nextPosition.y = transform.position.y;
         }
+
         rb.MovePosition(nextPosition);
     }
 
@@ -72,6 +71,7 @@ public class Character : MonoBehaviour
         {
             angle = Mathf.Sign(angle) * maxAngle;
         }
+
         rb.MoveRotation(rb.rotation + angle);
     }
 
@@ -82,7 +82,7 @@ public class Character : MonoBehaviour
         {
             var bullet = Instantiate(Bullet, SourcePosition.transform.position, transform.rotation);
             var bulletCollider = bullet.GetComponent<Collider2D>();
-            Physics2D.IgnoreCollision(bulletCollider,collider);
+            Physics2D.IgnoreCollision(bulletCollider, collider);
             timeToAttack = 1 / AttackPerSecornd;
         }
     }

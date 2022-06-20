@@ -18,20 +18,18 @@ public class Menu : MonoBehaviour
     public void PauseGame(bool canUnpause)
     {
         GameController controller = GameController.Instance;
-        if (controller.State == GameController.GameStates.Pause && canUnpause)
+        switch (controller.State)
         {
-            Time.timeScale = 1;
-            Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
-            controller.State = GameController.GameStates.RoundIn;
-            return;
-        }
-
-        if (controller.State == GameController.GameStates.RoundIn)
-        {
-            Time.timeScale = 0;
-            Time.fixedDeltaTime = 0;
-            controller.State = GameController.GameStates.Pause;
-            return;
+            case GameController.GameStates.Pause when canUnpause:
+                Time.timeScale = 1;
+                Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
+                controller.State = GameController.GameStates.RoundIn;
+                return;
+            case GameController.GameStates.RoundIn:
+                Time.timeScale = 0;
+                Time.fixedDeltaTime = 0;
+                controller.State = GameController.GameStates.Pause;
+                return;
         }
     }
 }

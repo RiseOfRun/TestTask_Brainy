@@ -1,21 +1,14 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.TestTools;
 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
     public Action StartRound;
-    [Header("dependencies")]
-    public Character FirstCharacter;
+    [Header("dependencies")] public Character FirstCharacter;
     public Character SecondCharacter;
     public EndGamePanel EndGamePanel;
-    [Header("settings")]
-    public float ScoreToWin = 3;
+    [Header("settings")] public float ScoreToWin = 3;
     public float TimeBetweenRounds;
     [HideInInspector] public float TimeToRound;
 
@@ -26,6 +19,7 @@ public class GameController : MonoBehaviour
         Pause,
         End
     }
+
     public GameStates State
     {
         get => state;
@@ -46,10 +40,12 @@ public class GameController : MonoBehaviour
             }
         }
     }
+
     private GameStates state;
+
     private void Awake()
     {
-        if (Instance==null)
+        if (Instance == null)
         {
             Instance = this;
         }
@@ -72,13 +68,14 @@ public class GameController : MonoBehaviour
         SecondCharacter.Score = 0;
         State = GameStates.Prepare;
     }
-    
+
     public void PlayerHit(Character p)
     {
-        if (state!=GameStates.RoundIn)
+        if (state != GameStates.RoundIn)
         {
             return;
         }
+
         int score = 0;
         if (FirstCharacter != p)
         {

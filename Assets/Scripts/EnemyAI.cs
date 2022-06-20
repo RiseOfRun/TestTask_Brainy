@@ -27,8 +27,8 @@ public class EnemyAI : MonoBehaviour
     private Character enemyCharacter;
     private Transform target;
     private Statements currentState = Statements.Seek;
-    private List<Transform> waypoints = new List<Transform>();
-    
+    private readonly List<Transform> waypoints = new List<Transform>();
+
     private Vector2 lastDetectionPosition;
     private Vector2 attackDirection;
     private Vector2 movement;
@@ -41,16 +41,18 @@ public class EnemyAI : MonoBehaviour
         Character[] players = FindObjectsOfType<Character>();
         foreach (Character p in players)
         {
-            if (p != this)
+            if (p != controlledCharacter)
             {
                 enemyCharacter = p;
                 break;
             }
         }
+
         foreach (Transform waypoint in Waypoints.transform)
         {
             waypoints.Add(waypoint);
         }
+
         float sector = 360f / RayCount;
         for (int i = 0; i < RayCount; i++)
         {
@@ -149,10 +151,11 @@ public class EnemyAI : MonoBehaviour
                 int point = Random.Range(0, waypoints.Count);
                 (waypoints[i], waypoints[point]) = (waypoints[point], waypoints[i]);
             }
+
             foreach (var waypoint in waypoints)
             {
-                if (!Physics2D.Raycast(transform.position,waypoint.position-transform.position,
-                    Vector2.Distance(waypoint.position,transform.position),LayerMask.GetMask("Wall")))
+                if (!Physics2D.Raycast(transform.position, waypoint.position - transform.position,
+                    Vector2.Distance(waypoint.position, transform.position), LayerMask.GetMask("Wall")))
                 {
                     target = waypoint;
                     break;
@@ -160,9 +163,9 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
+
     void Move()
     {
-        
         GetWaypoint();
         movement = target.position - transform.position;
         var transform1 = controlledCharacter.transform;
@@ -208,7 +211,8 @@ public class EnemyAI : MonoBehaviour
         Vector2 direction = r.direction.normalized;
         for (int i = 0; i < predictionDepth; i++)
         {
-            RaycastHit2D hit = Physics2D.Raycast(origin, direction, float.MaxValue, LayerMask.GetMask("Wall", "Player"));
+            RaycastHit2D hit =
+                Physics2D.Raycast(origin, direction, float.MaxValue, LayerMask.GetMask("Wall", "Player"));
             if (hit.collider != null)
             {
                 if (i != 0 || predictionDepth == 1)
