@@ -12,6 +12,6 @@ public class ScoreText : MonoBehaviour
 
     private void Update()
     {
-        text.text = $"{GameController.Instance.FirstPlayer.Score}:{GameController.Instance.SecondPlayer.Score}";
+        text.text = $"Score:\n{GameController.Instance.FirstCharacter.Score}:{GameController.Instance.SecondCharacter.Score}";
     }
 }

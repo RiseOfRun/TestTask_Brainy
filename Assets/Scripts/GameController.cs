@@ -3,19 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.TestTools;
 
 public class GameController : MonoBehaviour
 {
-    public Player FirstPlayer;
-    public Player SecondPlayer;
     public static GameController Instance;
-    public float ScoreToWin = 3;
     public Action StartRound;
-    public float TimeToRound = 3;
+    [FormerlySerializedAs("FirstPlayer")] [Header("dependencies")]
+    public Character FirstCharacter;
+    [FormerlySerializedAs("SecondPlayer")] public Character SecondCharacter;
+    public EndGamePanel EndGamePanel;
+    [Header("settings")]
+    public float ScoreToWin = 3;
+    public float TimeBetweenRounds = 3;
+    [HideInInspector] public float TimeToRound = 0;
 
-    private float timeToRound = 0;
-    
     public enum GameStates
     {
         Prepare,
@@ -23,58 +26,107 @@ public class GameController : MonoBehaviour
         Pause,
         End
     }
-    public GameStates State = GameStates.RoundIn;
 
-    void Start()
+    public GameStates State
     {
-        Instance = this;
-        StartGame();
-    }
-    void StartGame()
-    {
-        FirstPlayer.Score = 0;
-        SecondPlayer.Score = 0;
-    }
-
-    public void PlayerHit(Player p)
-    {
-        int score = 0;
-        if (FirstPlayer != p)
+        get => state;
+        private set
         {
-            FirstPlayer.Score++;
-            score = FirstPlayer.Score;
+            state = value;
+            switch (value)
+            {
+                case GameStates.Prepare:
+                    TimeToRound = TimeBetweenRounds;
+                    FirstCharacter.gameObject.SetActive(true);
+                    SecondCharacter.gameObject.SetActive(true);
+                    StartRound?.Invoke();
+                    return;
+                case GameStates.End:
+                    EndGame();
+                    return;
+                case GameStates.RoundIn:
+                    return;
+            }
+        }
+    }
+
+    private GameStates state = GameStates.RoundIn;
+
+    private void Awake()
+    {
+        if (Instance==null)
+        {
+            Instance = this;
         }
         else
         {
-            SecondPlayer.Score++;
-            score = SecondPlayer.Score;  
+            Destroy(gameObject);
         }
-        
-        if (score>=ScoreToWin)
+    }
+
+    void Start()
+    {
+        StartGame();
+    }
+
+    public void StartGame()
+    {
+        FirstCharacter.Score = 0;
+        SecondCharacter.Score = 0;
+        FirstCharacter.gameObject.SetActive(true);
+        SecondCharacter.gameObject.SetActive(true);
+        state = GameStates.Prepare;
+    }
+
+    public void PlayerHit(Character p)
+    {
+        if (state!=GameStates.RoundIn)
+        {
+            return;
+        }
+        int score = 0;
+        if (FirstCharacter != p)
+        {
+            FirstCharacter.Score++;
+            score = FirstCharacter.Score;
+        }
+        else
+        {
+            SecondCharacter.Score++;
+            score = SecondCharacter.Score;
+        }
+
+        if (score >= ScoreToWin)
         {
             State = GameStates.End;
         }
         else
         {
             State = GameStates.Prepare;
-            timeToRound = TimeToRound;
         }
     }
-    
+
+    void EndGame()
+    {
+        string winner = FirstCharacter.Score > SecondCharacter.Score ? "Player1" : "Player2";
+        EndGamePanel.Winner = winner;
+        EndGamePanel.gameObject.SetActive(true);
+    }
+
     private void Update()
     {
         switch (State)
         {
             case GameStates.Prepare:
-                if (timeToRound>0)
+                if (TimeToRound > 0)
                 {
-                    timeToRound -= Time.deltaTime;
+                    TimeToRound -= Time.deltaTime;
                 }
                 else
                 {
-                    StartRound?.Invoke();
                     State = GameStates.RoundIn;
                 }
+
                 break;
             case GameStates.RoundIn:
                 break;

@@ -5,26 +5,35 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private Player player;
+    private Character character;
 
     private Vector2 movement;
     private float angle;
     void Start()
     {
-        player = GetComponent<Player>();
+        character = GetComponent<Character>();
     }
 
     void Update()
     {
+        movement = Vector2.zero;
+        angle = 0;
         if (GameController.Instance.State!=GameController.GameStates.RoundIn)
         {
             return;
         }
-        angle = Input.GetAxisRaw("Horizontal")*180;
-        movement = new Vector2(0,Input.GetAxisRaw("Vertical"));
+        movement = new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"));
         if (Input.GetKey(KeyCode.Space))
         {
-            player.Attack();
+            character.Attack();
+        }
+        if (Input.GetKey(KeyCode.E))
+        {
+            angle = -180;
+        }
+        if (Input.GetKey(KeyCode.Q))
+        {
+            angle = 180;
         }
         
     }
@@ -33,11 +42,11 @@ public class PlayerController : MonoBehaviour
     {
         if (angle != 0)
         {
-            player.Rotate(angle);
+            character.Rotate(angle);
         }
         if (movement !=Vector2.zero)
         {
-            player.Move(player.transform.rotation*movement);
+            character.Move(movement);
         }
 
         

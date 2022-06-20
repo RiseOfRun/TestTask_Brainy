@@ -17,9 +17,10 @@ public class Bullet : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Player p = other.gameObject.GetComponent<Player>();
+        Character p = other.gameObject.GetComponent<Character>();
         if (p!=null)
         {
+            p.GetHit();
             GameController.Instance.PlayerHit(p);
             Destroy(gameObject);
             return;
@@ -30,10 +31,12 @@ public class Bullet : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        
         BounceCount -= 1;
         var contact = other.contacts[0];
         var direction = transform.rotation * Vector2.up;
         var reflection = Vector2.Reflect(direction,contact.normal);
+        if (rb == null) return;
         rb.velocity = Vector2.zero;
         rb.AddForce(reflection.normalized*Speed,ForceMode2D.Impulse);
         float angle = -Vector2.SignedAngle(reflection,Vector2.up);
