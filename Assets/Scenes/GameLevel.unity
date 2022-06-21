@@ -322,7 +322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 65.9079, y: -39.677002}
+  m_AnchoredPosition: {x: 65.9082, y: -39.676758}
   m_SizeDelta: {x: 131.8158, y: 67.7102}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &123562195
@@ -917,8 +917,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14549f1debd7baf4db42d09d48a8c330, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LogCount: 1
-  LogRate: 2
+  LogCount: 2
+  LogRate: 1.5
   Text: {fileID: 1534129662}
   PerformedActions: 
 --- !u!1 &235093250
@@ -1204,10 +1204,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 151264205}
-        m_TargetAssemblyTypeName: Menu, Assembly-CSharp
+      - m_Target: {fileID: 1457295779}
+        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
         m_MethodName: PauseGame
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1595,8 +1595,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 151264205}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: PauseGame
-        m_Mode: 6
+        m_MethodName: MenuButtonPress
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1864,7 +1864,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -51, y: -39.677017}
+  m_AnchoredPosition: {x: -51, y: -39.676758}
   m_SizeDelta: {x: 74.9677, y: 48.7549}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &716963450
@@ -1911,10 +1911,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 151264205}
-        m_TargetAssemblyTypeName: Menu, Assembly-CSharp
+      - m_Target: {fileID: 1457295779}
+        m_TargetAssemblyTypeName: GameController, Assembly-CSharp
         m_MethodName: PauseGame
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

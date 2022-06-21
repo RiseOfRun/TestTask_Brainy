@@ -9,14 +9,17 @@ public class RoundTimer : MonoBehaviour
 
     void Update()
     {
-        if (GameController.Instance.State == GameController.GameStates.Prepare)
+        switch (GameController.Instance.State)
         {
-            text.gameObject.SetActive(true);
-            text.text = $"{(int) GameController.Instance.TimeToRound + 1}";
-        }
-        else
-        {
-            text.gameObject.SetActive(false);
+            case GameController.GameStates.Pause:
+                return;
+            case GameController.GameStates.Prepare:
+                text.gameObject.SetActive(true);
+                text.text = $"{(int) GameController.Instance.TimeToRound + 1}";
+                break;
+            default:
+                text.gameObject.SetActive(false);
+                break;
         }
     }
 }

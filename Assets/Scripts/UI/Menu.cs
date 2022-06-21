@@ -15,21 +15,11 @@ public class Menu : MonoBehaviour
         SceneManager.LoadScene("Menu");
     }
 
-    public void PauseGame(bool canUnpause)
+    public void MenuButtonPress()
     {
-        GameController controller = GameController.Instance;
-        switch (controller.State)
+        if (GameController.Instance.State!=GameController.GameStates.Pause)
         {
-            case GameController.GameStates.Pause when canUnpause:
-                Time.timeScale = 1;
-                Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
-                controller.State = GameController.GameStates.RoundIn;
-                return;
-            case GameController.GameStates.RoundIn:
-                Time.timeScale = 0;
-                Time.fixedDeltaTime = 0;
-                controller.State = GameController.GameStates.Pause;
-                return;
+            GameController.Instance.PauseGame();
         }
     }
 }

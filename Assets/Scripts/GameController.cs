@@ -29,7 +29,10 @@ public class GameController : MonoBehaviour
             switch (value)
             {
                 case GameStates.Prepare:
-                    TimeToRound = TimeBetweenRounds;
+                    if (TimeToRound<=0)
+                    {
+                        TimeToRound = TimeBetweenRounds;
+                    }
                     FirstCharacter.gameObject.SetActive(true);
                     SecondCharacter.gameObject.SetActive(true);
                     StartRound?.Invoke();
@@ -42,7 +45,7 @@ public class GameController : MonoBehaviour
     }
 
     private GameStates state;
-
+    private GameStates stateBeforePause = GameStates.RoundIn;
     private void Awake()
     {
         if (Instance == null)
@@ -105,29 +108,47 @@ public class GameController : MonoBehaviour
         EndGamePanel.gameObject.SetActive(true);
     }
 
-    private void Update()
+    public void PauseGame()
     {
         switch (State)
         {
-            case GameStates.Prepare:
-                if (TimeToRound > 0)
-                {
-                    TimeToRound -= Time.deltaTime;
-                }
-                else
-                {
-                    State = GameStates.RoundIn;
-                }
-
-                break;
-            case GameStates.RoundIn:
-                break;
             case GameStates.Pause:
-                break;
-            case GameStates.End:
-                break;
+                Time.timeScale = 1;
+                Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
+                State = stateBeforePause;
+                return;
             default:
-                throw new ArgumentOutOfRangeException();
+                Time.timeScale = 0;
+                Time.fixedDeltaTime = 0;
+                stateBeforePause = State;
+                State = GameStates.Pause;
+                return;
         }
     }
-}
+
+    private void Update()
+        {
+            switch (State)
+            {
+                case GameStates.Prepare:
+                    if (TimeToRound > 0)
+                    {
+                        TimeToRound -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        State = GameStates.RoundIn;
+                    }
+
+                    break;
+                case GameStates.RoundIn:
+                    break;
+                case GameStates.Pause:
+                    break;
+                case GameStates.End:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+    }
